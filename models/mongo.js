@@ -1,6 +1,7 @@
 const process = require('process');
 const mongoose = require('mongoose');
 const mongoConfig = require('../config/mongoConfig.json');
+const autoIncrement = require('mongoose-auto-increment');
 
 var dbURI = mongoConfig.url;
 var dbOptions = mongoConfig.options;
@@ -26,5 +27,6 @@ process.on('SIGINT', () => {
     });
 });
 
+autoIncrement.initialize(mongoose.connection);
 module.exports = mongoose;
 

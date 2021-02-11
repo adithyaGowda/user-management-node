@@ -1,36 +1,37 @@
-let userList = [{
-    id: 1,
-    name: 'john',
-    email: 'abc@a.com',
-    phone: 11111
-},
-{
-    id: 2,
-    name: 'mary',
-    email: 'abc@a.com',
-    phone: 11111
-}];
+const user = require('../models/users');
 
 exports.addUser = (userData, callback) => {
-    userList.push(userData);
-    let newUser = {
-        ...userData,
-        info: "User created successfully"
-    }
-    callback(null, newUser);
+
+    const userDao = new user(userData);
+    userDao.save((err, savedData) => {
+        if (!err) {
+            console.log(`User created successfully with ${savedData.userId}`);
+        }
+        callback(err, savedData);
+    });
+
 }
 
 exports.getUsers = (callback) => {
-    callback(null, userList);
+
+    user.find({}, (err, userList) => {
+        if (!err) {
+            console.log("Users fetched successfully")
+        }
+        callback(err, userList);
+    });
+
 }
 
-exports.getUserById = (userId, callback) => {
-    function userById(userId) {
-        var result = userList.find(e => e ? e.id == userId : null);
-        return result ? result : "No matches found";
-    }
+exports.getUserById = (_userId, callback) => {
 
-    callback(null, userById(userId));
+    user.findOne({ userId: _userId }, (err, userData) => {
+        if (!err) {
+            console.log(`User Fetched successfully`);
+        }
+        //send the db output
+        callback(err, userData);
+    });
 }
 
 exports.updateUser = (userId, userData, callback) => {

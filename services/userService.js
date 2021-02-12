@@ -34,40 +34,33 @@ exports.getUserById = (_userId, callback) => {
     });
 }
 
-exports.updateUser = (userId, userData, callback) => {
+exports.updateUser = (_userId, userData, callback) => {
 
-    function findAndUpdateUser(userId, userData) {
-        let _userId = JSON.parse(userId);
-        var index = userList.findIndex(e => e.id === _userId);
-        if (index > -1) {
-            userList[index] = userData;
-
-            return {
-                user: userData,
-                info: "User updated successfully"
-            };
-        } else {
-            return "No matches found";
+    user.updateOne({ userId: _userId }, userData, (err, updatedUser) => {
+        if (!err) {
+            console.log(`User updated successfully`)
         }
 
-    }
+        let status = {
+            info: "User updated successfully",
+            ...updatedUser
+        }
 
-    callback(null, findAndUpdateUser(userId, userData));
+        callback(err, status);
+    });
 }
 
-exports.deleteUserById = (userId, callback) => {
+exports.deleteUserById = (_userId, callback) => {
 
-    function findUserAndDelete(userId) {
-        let _userId = JSON.parse(userId);
-        var index = userList.findIndex(e => e.id === _userId);
-
-        if (index > -1) {
-            userList.splice(index, 1);
-            return "User deleted successfully";
-
-        } else {
-            return "No matches found";
+    user.deleteOne({ userId: _userId }, (err, deletedUser) => {
+        if (!err) {
+            console.log(`User deleted successfully`)
         }
-    }
-    callback(null, findUserAndDelete(userId))
+        let status = {
+            info: "User deleted successfully",
+            ...deletedUser
+        }
+        callback(err, status);
+
+    });
 }
